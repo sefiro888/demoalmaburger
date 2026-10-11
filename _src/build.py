@@ -1,6 +1,7 @@
 """Genera las dos versiones de la web (multipágina) a partir de la misma base.
    python _src/build.py  ->  opcion-1-color/  y  opcion-2-fiel-logo/  (+ index.html selector en la raíz)"""
 import shutil, pathlib, json
+from html import escape
 
 SRC = pathlib.Path(__file__).parent
 ROOT = SRC.parent
@@ -11,6 +12,32 @@ THEMES = {
 PAGES = [('el-alma.html', 'El alma', 'alma'), ('carta.html', 'Carta', 'carta'), ('desayunos.html', 'Desayunos', 'desayunos'),
          ('galeria.html', 'Galería', 'galeria'), ('visitanos.html', 'Visítanos', 'visitanos')]
 JE = 'https://www.just-eat.es/restaurants-alma-burger-ordizia/menu'
+PUBLIC_URL = 'https://sefiro888.github.io/demoalmaburger/'
+SHARE_IMAGE = PUBLIC_URL + 'opcion-2-fiel-logo/img/logo-anim.png'
+SHARE_TITLE = 'Alma Burger · Una web con alma'
+SHARE_DESCRIPTION = 'Toda la personalidad de Alma Burger en una nueva web: mascotas, carta y desayunos. Descubre las dos propuestas y elige tu favorita.'
+
+
+def social_meta(title, description, page=''):
+    title, description = escape(title, quote=True), escape(description, quote=True)
+    url = PUBLIC_URL + page
+    return f'''<meta property="og:type" content="website">
+<meta property="og:site_name" content="Alma Burger">
+<meta property="og:locale" content="es_ES">
+<meta property="og:title" content="{title}">
+<meta property="og:description" content="{description}">
+<meta property="og:url" content="{url}">
+<meta property="og:image" content="{SHARE_IMAGE}">
+<meta property="og:image:secure_url" content="{SHARE_IMAGE}">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="2000">
+<meta property="og:image:height" content="2000">
+<meta property="og:image:alt" content="Logo original de Alma Burger con su mascota hamburguesa">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{title}">
+<meta name="twitter:description" content="{description}">
+<meta name="twitter:image" content="{SHARE_IMAGE}">
+<link rel="canonical" href="{url}">'''
 
 
 def rig(w=150, extra=''):
@@ -95,7 +122,7 @@ CART = f'''<aside class="cart" id="cart" aria-hidden="true" aria-label="Mi pedid
 
 
 
-def shell(active, title, desc, body, tcolor, og='img/burger.jpg'):
+def shell(active, title, desc, body, tcolor, page=''):
     return f'''<!doctype html>
 <html lang="es">
 <head>
@@ -104,9 +131,7 @@ def shell(active, title, desc, body, tcolor, og='img/burger.jpg'):
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <meta name="theme-color" content="{tcolor}">
-<meta property="og:title" content="{title}">
-<meta property="og:description" content="{desc}">
-<meta property="og:image" content="{og}">
+{social_meta(title, desc, page)}
 <link rel="icon" type="image/png" href="img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -484,9 +509,10 @@ def main():
         for k, fn in BODIES.items():
             title, desc = TITLES[k]
             active = {'index': '', 'alma': 'alma', 'carta': 'carta', 'desayunos': 'desayunos', 'galeria': 'galeria', 'visitanos': 'visitanos'}[k]
-            (out / FILES[k]).write_text(shell(active, title, desc, fn(), t['tcolor']), encoding='utf-8')
-        (out / '404.html').write_text(shell('', 'Página no encontrada · Alma Burger', 'Página no encontrada', nf(), t['tcolor']), encoding='utf-8')
-    (ROOT / 'index.html').write_text(SELECTOR, encoding='utf-8')
+            (out / FILES[k]).write_text(shell(active, title, desc, fn(), t['tcolor'], f'{d}/{FILES[k]}'), encoding='utf-8')
+        (out / '404.html').write_text(shell('', 'Página no encontrada · Alma Burger', 'Página no encontrada', nf(), t['tcolor'], f'{d}/404.html'), encoding='utf-8')
+    selector = SELECTOR.replace('<title>Alma Burger · Elige versión</title>', f'<title>{SHARE_TITLE}</title>\n<meta name="description" content="{SHARE_DESCRIPTION}">\n' + social_meta(SHARE_TITLE, SHARE_DESCRIPTION), 1)
+    (ROOT / 'index.html').write_text(selector, encoding='utf-8')
     print('ok')
 
 
