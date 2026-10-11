@@ -28,36 +28,30 @@
   </div>
 </header>
 <main id="contenido">
-<section class="phero phero--pic">
-  <div class="wrap">
+<section class="phero phero--illustrated phero--desayunos" aria-labelledby="page-title">
+  <div class="phero__canvas" aria-hidden="true"></div>
+  <div class="wrap phero__layout">
     <nav class="crumbs" aria-label="Migas de pan"><a href="index.html">Inicio</a><span>/</span><span>Desayunos</span></nav>
-    <h1 class="reveal">Desayunos <em>con alma</em></h1>
-    <p class="lead reveal">De 8:00 a 12:00. Donde el café tiene alma y los desayunos también.</p>
-  </div>
-  <figure class="phero__pic reveal"><img src="img/tostada.jpg" alt="Tostada de salmón, aguacate y hummus de remolacha"></figure>
-  <div class="phero__line"></div>
-  <div class="walker" aria-hidden="true" style="--w:104px;--t:24s"><div class="walker__x"><div class="walker__flip"><div class="rig " style="--w:104px" aria-hidden="true"><div class="bob"><img class="legL" src="img/mascot-legL.png" alt=""><img class="legR" src="img/mascot-legR.png" alt=""><img class="body" src="img/mascot-body.png" alt=""></div></div></div></div></div>
-</section>
-<section class="sec">
-  <div class="wrap split">
-    <div class="split__pic"><figure class="ph ph--1 reveal"><img src="img/desayuno-capricho.jpg" alt="Pancakes de nutella con fresas" loading="lazy"></figure>
-      <figure class="ph ph--2 reveal"><img src="img/matcha.jpg" alt="Matcha helado" loading="lazy"></figure>
-      <figure class="ph ph--3 reveal"><img src="img/pancake.jpg" alt="Pancakes de Ferrero Rocher" loading="lazy"></figure></div>
-    <div><p class="kicker reveal">Para empezar bien el día</p><h2 class="sec__title reveal">Tostadas, pancakes <em>y matcha</em></h2>
-      <p class="reveal">Tostadas con toppings de verdad, pancakes golosos, bowls, zumos, smoothies y unos matchas que no vas a poder dejar de pedir.</p>
-      <ul class="dots reveal"><li><span>Espresso</span><i></i><b>1,70€</b></li><li><span>Tostada de salmón y mascarpone</span><i></i><b>7,50€</b></li><li><span>Pancakes de Ferrero</span><i></i><b>6,30€</b></li><li><span>Matcha de mango</span><i></i><b>4,00€</b></li></ul>
+    <figure class="phero__illustration"><img src="img/illustrations/desayunos.png" alt="La hamburguesa de Alma disfruta de un café" width="1347" height="1167" fetchpriority="high"></figure>
+    <div class="phero__intro">
+      <h1 id="page-title">Desayunos <em>con alma</em></h1>
+      <p class="lead">De 8:00 a 12:00. Donde el café tiene alma y los desayunos también.</p>
     </div>
   </div>
-</section>
-<section class="sec sec--dark" style="padding-top:34px" id="menu-desayunos">
+</section><section class="sec menu-section" id="menu-desayunos" aria-label="Carta de platos">
   <div class="wrap">
-    <div class="carta__head reveal"><h2 class="sec__title" style="margin:0">La carta de <em>desayunos</em></h2>
-      <label class="search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input id="q" type="search" placeholder="Busca: matcha, croissant, salmón…" aria-label="Buscar en desayunos" autocomplete="off"></label></div>
+    <div class="menu-heading">
+      <div><h2 class="sec__title">La carta de <em>desayunos</em></h2><p>Toca un plato para ver sus detalles. Pulsa + para añadirlo a tu pedido para recoger.</p></div>
+      <label class="search"><span aria-hidden="true">⌕</span><input id="q" type="search" placeholder="Café, tostadas, pancakes…" aria-label="Buscar platos" autocomplete="off"></label>
+    </div>
+    <label class="menu-category" for="menuCategory">¿Qué te apetece?<select id="menuCategory" aria-label="Secciones de desayuno"></select></label>
     <div class="tabs" id="tabs" role="tablist" aria-label="Secciones de desayuno"></div>
-    <div class="chips" id="chips" aria-label="Filtros"></div>
-    <div id="menu" class="menu" data-mode="desayunos" aria-live="polite"></div>
-    <p class="carta__note">Desayunos de 8:00 a 12:00. Consulta nuestra <b>carta de alérgenos</b> al personal.</p>
+    <div class="menu-meta"><output id="resultCount" aria-live="polite"></output><details class="menu-refine"><summary>Filtrar y ordenar</summary>
+      <div class="menu-refine__body"><div class="chips" id="chips" aria-label="Filtros"></div>
+      <div class="menu-tools"><label>Ordenar <select id="menuSort"><option value="original">Orden de la carta</option><option value="asc">Precio: menor a mayor</option><option value="desc">Precio: mayor a menor</option></select></label><button type="button" id="resetMenu">Limpiar filtros</button></div></div>
+    </details></div>
+    <div id="menu" class="menu menu--list" data-mode="desayunos" aria-live="polite"></div>
+    <p class="carta__note">Desayunos de 8:00 a 12:00. Consulta nuestra carta de alérgenos al personal.</p>
   </div>
 </section>
 </main>
@@ -114,6 +108,8 @@
 <button class="orderbar" id="orderbar" type="button" hidden><span class="orderbar__n" id="orderbarN">0</span><span>Ver mi pedido</span><b id="orderbarT">0,00€</b></button>
 <div class="progress" id="progress" aria-hidden="true"></div>
 <a class="wa" href="https://wa.me/34747486092" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.6-4.8A9 9 0 1 1 8 19.5L3 21Z"/><path d="M9 10c0 2.800 2.200 5 5 5l1.200-1.300-1.800-1-.8.700a4 4 0 0 1-1.700-1.700l.7-.8-1-1.800L9 10Z" fill="currentColor" stroke="none"/></svg></a>
+<nav class="mobile-dock" aria-label="Accesos rápidos"><a href="carta.html">La carta</a><button type="button" data-wa-order>Recoger</button><a href="visitanos.html">Visítanos</a></nav><button class="motion-toggle" type="button" id="motionToggle" aria-pressed="false">Pausar movimiento</button>
 <script src="app.js"></script>
+
 </body>
 </html>

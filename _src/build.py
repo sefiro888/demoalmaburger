@@ -123,12 +123,35 @@ def shell(active, title, desc, body, tcolor, og='img/burger.jpg'):
 {CTA}
 {FOOT}
 {CART}
+<nav class="mobile-dock" aria-label="Accesos rápidos"><a href="carta.html">La carta</a><button type="button" data-wa-order>Recoger</button><a href="visitanos.html">Visítanos</a></nav><button class="motion-toggle" type="button" id="motionToggle" aria-pressed="false">Pausar movimiento</button>
 <script src="app.js"></script>
+{('<script src="precision.js"></script>') if active == '' and 'motion-stage' in body else ''}
 </body>
 </html>'''
 
 
 def phero(crumb, h1, lead, pic=None, pic_alt='', dark=False):
+    illustrations = {
+        'Carta': ('carta', 'El hot dog de Alma presenta la carta'),
+        'Desayunos': ('desayunos', 'La hamburguesa de Alma disfruta de un café'),
+        'El alma': ('alma', 'La hamburguesa de Alma abraza un corazón'),
+        'Galería': ('galeria', 'La hamburguesa de Alma posa con una cámara'),
+        'Visítanos': ('visitanos', 'El hot dog de Alma te da la bienvenida'),
+    }
+    if crumb in illustrations:
+        asset, alt = illustrations[crumb]
+        iw, ih = (1536, 1024) if asset == 'carta' else (1347, 1167)
+        return f'''<section class="phero phero--illustrated phero--{asset}" aria-labelledby="page-title">
+  <div class="phero__canvas" aria-hidden="true"></div>
+  <div class="wrap phero__layout">
+    <nav class="crumbs" aria-label="Migas de pan"><a href="index.html">Inicio</a><span>/</span><span>{crumb}</span></nav>
+    <figure class="phero__illustration"><img src="img/illustrations/{asset}.png" alt="{alt}" width="{iw}" height="{ih}" fetchpriority="high"></figure>
+    <div class="phero__intro">
+      <h1 id="page-title">{h1}</h1>
+      <p class="lead">{lead}</p>
+    </div>
+  </div>
+</section>'''
     p = f'<figure class="phero__pic reveal"><img src="img/{pic}" alt="{pic_alt}"></figure>' if pic else ''
     return f'''<section class="phero{' phero--dark' if dark else ''}{' phero--pic' if pic else ''}">
   <div class="wrap">
@@ -143,7 +166,8 @@ def phero(crumb, h1, lead, pic=None, pic_alt='', dark=False):
 
 
 # ---------------------------------------------------------------- páginas
-STAGE = (SRC / 'stage.svg.html').read_text(encoding='utf-8')
+STAGE = (SRC / 'precision-stage.svg.html').read_text(encoding='utf-8')
+MOTION_CONTROLS = (SRC / 'precision-controls.html').read_text(encoding='utf-8')
 
 
 IG = ''.join(f'<a class="ig reveal" href="https://www.instagram.com/almaburgers/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="img/{f}" alt="" loading="lazy"></a>' for f in ['burger.jpg', 'picoteo.jpg', 'pancake.jpg', 'trufadas.jpg', 'matcha.jpg', 'tostada.jpg'])
@@ -151,33 +175,45 @@ IG = ''.join(f'<a class="ig reveal" href="https://www.instagram.com/almaburgers/
 
 def home():
     marq = ''.join(f'<span>{t}</span><i>✶</i>' for t in ['Smash burgers', 'Picoteo', 'Hot dogs', 'Desayunos hasta las 12:00', 'Tartas de queso', 'Matcha'])
-    return f'''<section class="hero">
-  <div class="hero__copy">
-    <p class="eyebrow reveal"><span class="dot"></span><span id="openStatus">Hamburguesería · Ordizia</span></p>
-    <h1 class="sr-only">Alma Burger</h1>
-    <div class="stagewrap reveal">{STAGE}<div class="stage__dots" id="stageDots" role="group" aria-label="Elegir la entrada de la mascota"></div></div>
-    <p class="hero__lead reveal">Donde el sabor tiene <em>alma</em>. Smash burgers de recetas propias, picoteo para compartir y desayunos de los que invitan a volver.</p>
-    <div class="hero__cta reveal">
-      <a class="btn btn--je" href="{JE}" target="_blank" rel="noopener">Pedir a domicilio · Just Eat ↗</a>
-      <button class="btn" type="button" data-wa-order>Recoger por WhatsApp</button>
+    return f'''<section class="hero hero--brand">
+  <div class="hero__brand">
+    <h1 class="sr-only">Alma Burger · Hamburguesas y desayunos en Ordizia</h1>
+    <div class="stagewrap">{STAGE}{MOTION_CONTROLS}</div>
+  </div>
+  <div class="hero__welcome">
+    <p class="kicker">Ordizia · Kale Nagusia 42</p>
+    <h2 class="hero__headline">Donde el sabor<br>tiene <em>alma.</em></h2>
+    <p class="hero__intro">Buenas burgers, desayunos con calma y momentos para compartir.</p>
+    <div class="hero__cta">
+      <a class="btn btn--solid" href="carta.html">Elige tu burger →</a>
+      <a class="btn" href="desayunos.html">Ver desayunos</a>
     </div>
-    <p class="hero__alt reveal"><a href="carta.html">Ver la carta</a> · A domicilio, en Just Eat · Para recoger, por WhatsApp o al <a href="tel:+34747486092">747 48 60 92</a></p>
-    <ul class="hero__facts reveal"><li><b>16</b> hamburguesas</li><li><b>8:00</b> desayunos</li><li><b>Kale Nagusia</b> 42</li></ul>
+    <p class="hero__delivery"><button class="lnk" type="button" data-wa-order>Para recoger</button><span aria-hidden="true"> · </span><a href="{JE}" target="_blank" rel="noopener">A domicilio ↗</a></p>
+    <p class="hero__status"><span class="dot"></span><span id="openStatus">Hamburguesería · Ordizia</span></p>
+    <a class="hero__story-link" href="#nuestra-historia">Nuestra historia ↓</a>
   </div>
-  <div class="hero__visual" id="heroVisual">
-    <div class="blob"></div>
-    <figure class="hero__photo"><img src="img/burger.jpg" alt="La Puerquita, la burger del mes: doble smash con pulled pork" fetchpriority="high"><a class="hero__tag" href="carta.html#hamburguesas">Burger del mes · La Puerquita</a></figure>
-    <figure class="hero__photo hero__photo--b"><img src="img/trufadas.jpg" alt="Patatas trufadas con parmesano y mayonesa de trufa"></figure>
-    <svg class="sticker" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="circ" d="M100,100 m-72,0 a72,72 0 1,1 144,0 a72,72 0 1,1 -144,0"/></defs><circle cx="100" cy="100" r="96"/><text><textPath href="#circ" font-size="17" font-weight="800" textLength="440" lengthAdjust="spacing">SMASH BURGERS · AL MOMENTO · SIN ATAJOS · </textPath></text><text x="100" y="118" text-anchor="middle" font-size="62" font-family="Bagel Fat One">✶</text></svg>
+</section>
+<div class="wrap"><nav class="quick-routes" aria-label="Descubre la carta"><a href="carta.html#hamburguesas"><span>Smash burgers<small>Encuentra la tuya</small></span><b>↗</b></a><a href="carta.html#compartir"><span>Para compartir<small>La mejor compañía</small></span><b>↗</b></a><a href="desayunos.html"><span>Desayunos<small>Empieza con alma</small></span><b>↗</b></a><a href="carta.html#postres"><span>Algo dulce<small>Deja un hueco</small></span><b>↗</b></a></nav></div>
+<section class="sec home-story" id="nuestra-historia" aria-labelledby="home-story-title">
+  <div class="wrap home-story__grid">
+    <div class="home-story__copy">
+      <p class="kicker reveal">Nuestra historia</p>
+      <h2 class="sec__title reveal" id="home-story-title">Todo empezó <em>con una idea.</em></h2>
+      <p class="home-story__lead reveal">Un lugar para disfrutar de buenas hamburguesas y compartir momentos con amigos.</p>
+      <p class="reveal">Así nació Alma Burger: con ganas de cocinar con cariño y dar importancia a cada ingrediente. Elegimos la carne y el pan con cuidado y preparamos cada hamburguesa al momento.</p>
+      <p class="reveal">Para nosotros, la experiencia también está en la compañía y en sentirse a gusto. Seguimos creciendo con esa misma ilusión: que te sientas como en casa y tengas ganas de volver.</p>
+      <a class="btn reveal" href="el-alma.html">Conoce el alma de Alma →</a>
+    </div>
+    <figure class="home-story__art reveal"><img src="img/illustrations/alma.png" alt="La hamburguesa de Alma abraza un corazón" loading="lazy" width="1347" height="1167"></figure>
   </div>
-  <div class="heroline" aria-hidden="true">{walker(112, 22)}</div>
 </section>
 <div class="marquee" aria-hidden="true"><div class="marquee__track">{marq}{marq}</div></div>
 
-<section class="sec">
+<section class="sec"><div class="wrap taste"><div class="taste__intro"><p class="kicker">Tu próxima favorita</p><h2 class="sec__title">¿Qué te <em>pide el cuerpo?</em></h2><p>Elige tu antojo. Te acercamos dos burgers de nuestra carta para empezar.</p><div class="taste__choices" role="group" aria-label="Elige tu antojo"><button data-taste="clasica" aria-pressed="true">Algo clásico</button><button data-taste="potente" aria-pressed="false">Con todo</button><button data-taste="picante" aria-pressed="false">Un toque picante</button></div></div><div class="taste__result" id="tasteResult" aria-live="polite"></div></div></section>
+<section class="sec" style="padding-top:0">
   <div class="wrap">
     <div class="sec__head"><div><p class="kicker reveal">Los destacados</p><h2 class="sec__title reveal">Para empezar <em>fuerte</em></h2></div>
-      <a class="btn btn--solid reveal" href="carta.html">Toda la carta →</a></div>
+      <a class="btn btn--solid reveal" href="carta.html">Toda la carta →</a><div class="rail-controls"><button type="button" data-rail="-1" aria-label="Ver destacados anteriores">←</button><button type="button" data-rail="1" aria-label="Ver más destacados">→</button></div></div>
     <div class="rail" id="featured"></div>
   </div>
 </section>
@@ -216,11 +252,11 @@ def home():
   <div class="wrap">
     <p class="kicker reveal">Descubre</p><h2 class="sec__title reveal">Todo Alma, <em>en un vistazo</em></h2>
     <div class="tease" style="margin-top:30px">
-      <a class="tz tz--wide reveal" href="carta.html"><img src="img/dishes/la-triplona.jpg" alt="" loading="lazy"><span class="tz__go">→</span><div class="tz__in"><h3>La carta</h3><p>Hamburguesas, picoteo, bocadillos, hot dogs y postres.</p></div></a>
-      <a class="tz tz--wide reveal" href="desayunos.html"><img src="img/tostada.jpg" alt="" loading="lazy"><span class="tz__go">→</span><div class="tz__in"><h3>Desayunos</h3><p>Tostadas, pancakes, bowls y matcha hasta las 12:00.</p></div></a>
-      <a class="tz reveal" href="el-alma.html"><img src="img/cabrona.jpg" alt="" loading="lazy"><span class="tz__go">→</span><div class="tz__in"><h3>El alma</h3><p>Nuestra historia.</p></div></a>
-      <a class="tz reveal" href="galeria.html"><img src="img/picoteo.jpg" alt="" loading="lazy"><span class="tz__go">→</span><div class="tz__in"><h3>Galería</h3><p>Mejor verlo que contarlo.</p></div></a>
-      <a class="tz tz--plain reveal" href="visitanos.html"><span class="tz__go">→</span><div class="tz__in"><h3>Visítanos</h3><p>Kale Nagusia 42, Ordizia.</p></div>{rig(110, 'rig--still')}</a>
+      <a class="tz tz--illustrated tz--carta tz--wide reveal" href="carta.html"><span class="tz__scene"><img src="img/illustrations/carta.png" alt="" loading="lazy" width="1536" height="1024"></span><span class="tz__go" aria-hidden="true">→</span><div class="tz__in"><span class="tz__eyebrow">Elige tu antojo</span><h3>La carta</h3><p>Hamburguesas, picoteo, bocadillos, hot dogs y postres.</p></div></a>
+      <a class="tz tz--illustrated tz--desayunos tz--wide reveal" href="desayunos.html"><span class="tz__scene"><img src="img/illustrations/desayunos.png" alt="" loading="lazy" width="1347" height="1167"></span><span class="tz__go" aria-hidden="true">→</span><div class="tz__in"><span class="tz__eyebrow">Buenos días, Alma</span><h3>Desayunos</h3><p>Tostadas, pancakes, bowls y matcha hasta las 12:00.</p></div></a>
+      <a class="tz tz--illustrated tz--alma reveal" href="el-alma.html"><span class="tz__scene"><img src="img/illustrations/alma.png" alt="" loading="lazy" width="1347" height="1167"></span><span class="tz__go" aria-hidden="true">→</span><div class="tz__in"><span class="tz__eyebrow">Lo que nos mueve</span><h3>El alma</h3><p>Nuestra historia.</p></div></a>
+      <a class="tz tz--illustrated tz--galeria reveal" href="galeria.html"><span class="tz__scene"><img src="img/illustrations/galeria.png" alt="" loading="lazy" width="1347" height="1167"></span><span class="tz__go" aria-hidden="true">→</span><div class="tz__in"><span class="tz__eyebrow">Momentos con alma</span><h3>Galería</h3><p>Mejor verlo que contarlo.</p></div></a>
+      <a class="tz tz--illustrated tz--visitanos reveal" href="visitanos.html"><span class="tz__scene"><img src="img/illustrations/visitanos.png" alt="" loading="lazy" width="1347" height="1167"></span><span class="tz__go" aria-hidden="true">→</span><div class="tz__in"><span class="tz__eyebrow">Te esperamos</span><h3>Visítanos</h3><p>Kale Nagusia 42, Ordizia.</p></div></a>
     </div>
   </div>
 </section>
@@ -240,10 +276,11 @@ def alma():
   <div class="wrap">
     <p class="kicker reveal">Nuestra historia</p>
     <h2 class="statement reveal">La hamburguesa es la excusa. <span>Lo que importa es compartir el momento.</span></h2>
+    <p class="reveal story-origin">Alma nació con la idea de ofrecer hamburguesas de calidad en un lugar para reunirse con amigos. La selección de la carne y el pan, la preparación al momento y las ganas de seguir creciendo forman parte de esa historia.</p>
     <div class="pillars">
       <article class="pillar reveal"><span class="pillar__n">01</span><h3>Ingredientes con carácter</h3><p>Elegimos cada ingrediente, desde la carne hasta el pan. Sin atajos, con recetas únicas que te harán volver.</p></article>
       <article class="pillar reveal"><span class="pillar__n">02</span><h3>Al momento, siempre</h3><p>Cada pedido se prepara cuando lo pides. Smash a la plancha, queso fundido y a la mesa mientras aún humea.</p></article>
-      <article class="pillar reveal"><span class="pillar__n">03</span><h3>Como en casa</h3><p>Una terraza tranquila, buen rollo y un equipo que te trata como a un amigo. Bienvenido a Alma Burger.</p></article>
+      <article class="pillar reveal"><span class="pillar__n">03</span><h3>Como en casa</h3><p>Queremos que cada visita sea un momento para compartir y que te sientas como en casa. Bienvenido a Alma Burger.</p></article>
     </div>
   </div>
 </section>
@@ -304,48 +341,36 @@ JEBANNER = f'''
 </div></section>'''
 
 
-def carta():
-    return phero('Carta', 'Elige tu <em>perdición</em>', 'Smash burgers, picoteo, bocadillos, hot dogs y tartas de queso. A domicilio, pide en Just Eat. Para recoger, pulsa + y envía tu pedido por WhatsApp.') + JEBANNER + '''
-<section class="sec sec--dark" style="padding-top:34px">
+def menu_panel(breakfast=False):
+    title = 'La carta de <em>desayunos</em>' if breakfast else 'La carta, <em>a tu ritmo</em>'
+    mode = 'desayunos' if breakfast else 'all'
+    label = 'Secciones de desayuno' if breakfast else 'Categorías de la carta'
+    hint = 'Café, tostadas, pancakes…' if breakfast else 'Busca tu plato o ingrediente'
+    note = 'Desayunos de 8:00 a 12:00.' if breakfast else 'Suplemento por cada ingrediente extra.'
+    return f'''<section class="sec menu-section" id="menu-desayunos" aria-label="Carta de platos">
   <div class="wrap">
-    <div class="carta__head reveal">
-      <a class="ribbon" href="#hamburguesas" onclick="document.querySelector('[data-tab=hamburguesas]').click()" style="margin:0"><span class="ribbon__tag">Burger del mes</span><b>La Puerquita</b><span>pulled pork · 18,50€</span></a>
-      <button class="btn btn--cream btn--sm" type="button" data-surprise>¿Indeciso? Sorpréndeme</button>
-      <label class="search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input id="q" type="search" placeholder="Busca: cabra, trufa, picante…" aria-label="Buscar en la carta" autocomplete="off"></label>
+    <div class="menu-heading">
+      <div><h2 class="sec__title">{title}</h2><p>Toca un plato para ver sus detalles. Pulsa + para añadirlo a tu pedido para recoger.</p></div>
+      <label class="search"><span aria-hidden="true">⌕</span><input id="q" type="search" placeholder="{hint}" aria-label="Buscar platos" autocomplete="off"></label>
     </div>
-    <div class="tabs" id="tabs" role="tablist" aria-label="Categorías de la carta"></div>
-    <div class="chips" id="chips" aria-label="Filtros"></div>
-    <div id="menu" class="menu" data-mode="all" aria-live="polite"></div>
-    <p class="carta__note">Suplemento por cada ingrediente extra. Consulta nuestra <b>carta de alérgenos</b> al personal. Algunas imágenes son ilustrativas.</p>
+    <label class="menu-category" for="menuCategory">¿Qué te apetece?<select id="menuCategory" aria-label="{label}"></select></label>
+    <div class="tabs" id="tabs" role="tablist" aria-label="{label}"></div>
+    <div class="menu-meta"><output id="resultCount" aria-live="polite"></output><details class="menu-refine"><summary>Filtrar y ordenar</summary>
+      <div class="menu-refine__body"><div class="chips" id="chips" aria-label="Filtros"></div>
+      <div class="menu-tools"><label>Ordenar <select id="menuSort"><option value="original">Orden de la carta</option><option value="asc">Precio: menor a mayor</option><option value="desc">Precio: mayor a menor</option></select></label><button type="button" id="resetMenu">Limpiar filtros</button></div></div>
+    </details></div>
+    <div id="menu" class="menu menu--list" data-mode="{mode}" aria-live="polite"></div>
+    <p class="carta__note">{note} Consulta nuestra carta de alérgenos al personal.</p>
   </div>
 </section>'''
+
+
+def carta():
+    return phero('Carta', 'Elige tu <em>perdición</em>', 'Smash burgers, picoteo para compartir, bocadillos, hot dogs y un final dulce. Encuentra tu próximo antojo.') + menu_panel()
 
 
 def desayunos():
-    return phero('Desayunos', 'Desayunos <em>con alma</em>', 'De 8:00 a 12:00. Donde el café tiene alma y los desayunos también.', 'tostada.jpg', 'Tostada de salmón, aguacate y hummus de remolacha') + '''
-<section class="sec">
-  <div class="wrap split">
-    <div class="split__pic"><figure class="ph ph--1 reveal"><img src="img/desayuno-capricho.jpg" alt="Pancakes de nutella con fresas" loading="lazy"></figure>
-      <figure class="ph ph--2 reveal"><img src="img/matcha.jpg" alt="Matcha helado" loading="lazy"></figure>
-      <figure class="ph ph--3 reveal"><img src="img/pancake.jpg" alt="Pancakes de Ferrero Rocher" loading="lazy"></figure></div>
-    <div><p class="kicker reveal">Para empezar bien el día</p><h2 class="sec__title reveal">Tostadas, pancakes <em>y matcha</em></h2>
-      <p class="reveal">Tostadas con toppings de verdad, pancakes golosos, bowls, zumos, smoothies y unos matchas que no vas a poder dejar de pedir.</p>
-      <ul class="dots reveal"><li><span>Espresso</span><i></i><b>1,70€</b></li><li><span>Tostada de salmón y mascarpone</span><i></i><b>7,50€</b></li><li><span>Pancakes de Ferrero</span><i></i><b>6,30€</b></li><li><span>Matcha de mango</span><i></i><b>4,00€</b></li></ul>
-    </div>
-  </div>
-</section>
-<section class="sec sec--dark" style="padding-top:34px" id="menu-desayunos">
-  <div class="wrap">
-    <div class="carta__head reveal"><h2 class="sec__title" style="margin:0">La carta de <em>desayunos</em></h2>
-      <label class="search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input id="q" type="search" placeholder="Busca: matcha, croissant, salmón…" aria-label="Buscar en desayunos" autocomplete="off"></label></div>
-    <div class="tabs" id="tabs" role="tablist" aria-label="Secciones de desayuno"></div>
-    <div class="chips" id="chips" aria-label="Filtros"></div>
-    <div id="menu" class="menu" data-mode="desayunos" aria-live="polite"></div>
-    <p class="carta__note">Desayunos de 8:00 a 12:00. Consulta nuestra <b>carta de alérgenos</b> al personal.</p>
-  </div>
-</section>'''
+    return phero('Desayunos', 'Desayunos <em>con alma</em>', 'De 8:00 a 12:00. Donde el café tiene alma y los desayunos también.') + menu_panel(True)
 
 
 def galeria():
@@ -451,12 +476,11 @@ span.b{display:inline-block;margin-top:10px;background:#0b0b0b;color:#faf9f5;bor
 def main():
     for d, t in THEMES.items():
         out = ROOT / d
-        if out.exists():
-            shutil.rmtree(out)
-        out.mkdir()
-        shutil.copytree(SRC / 'img', out / 'img')
-        (out / 'styles.css').write_text((SRC / 'base.css').read_text(encoding='utf-8') + '\n' + (SRC / 'pedido-v2.css').read_text(encoding='utf-8') + '\n' + (SRC / t['css']).read_text(encoding='utf-8'), encoding='utf-8')
+        out.mkdir(exist_ok=True)
+        shutil.copytree(SRC / 'img', out / 'img', dirs_exist_ok=True)
+        (out / 'styles.css').write_text((SRC / 'base.css').read_text(encoding='utf-8') + '\n' + (SRC / 'pedido-v2.css').read_text(encoding='utf-8') + '\n' + (SRC / t['css']).read_text(encoding='utf-8') + '\n' + (SRC / 'refinement.css').read_text(encoding='utf-8'), encoding='utf-8')
         shutil.copy(SRC / 'app.js', out / 'app.js')
+        (out / 'precision.js').write_text("(() => {\n" + (SRC / 'precision-animation.js').read_text(encoding='utf-8') + "\n})();", encoding='utf-8')
         for k, fn in BODIES.items():
             title, desc = TITLES[k]
             active = {'index': '', 'alma': 'alma', 'carta': 'carta', 'desayunos': 'desayunos', 'galeria': 'galeria', 'visitanos': 'visitanos'}[k]

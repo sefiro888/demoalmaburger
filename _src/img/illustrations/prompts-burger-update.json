@@ -1,0 +1,15 @@
+{
+  "mode": "built-in image_gen",
+  "reference": "_src/img/mascot.png",
+  "transparent_background": true,
+  "assets": [
+    {
+      "name": "desayunos",
+      "prompt": "Create a replacement transparent website editorial illustration. The attached image is the EXACT existing Alma Burger mascot and identity reference. Make this same burger character the sole protagonist: wide low rounded layered burger body, two circular black sunglasses on top bun, playful tongue sticking out to the LEFT of its mouth, long thin black rubber-hose arms and legs, cream white gloves and oversized original simple sneakers. Preserve its recognisable silhouette and face, not a newly invented mascot. Match original flat black line art on warm ivory fills, subtle sparse halftone only. One complete character, whole body and shoes visible, centered scene with generous margins, clean silhouette readable on mobile. No text, logos, photography, other characters or anthropomorphic props. Props must be plain objects with NO faces, eyes, arms, legs. Transparent background, no background scene. Breakfast scene: the Alma burger sits relaxed on a simple small stool with legs comfortably extended, holding a plain steaming coffee cup in its right glove and raising the left glove in its familiar peace sign. Keep mouth tongue and round sunglasses clearly visible; coffee cup sits off to one side, does not cover face or burger silhouette. Minimal breakfast styling, cheerful relaxed morning mood."
+    },
+    {
+      "name": "galeria",
+      "prompt": "Create a replacement transparent website editorial illustration. The attached image is the EXACT existing Alma Burger mascot and identity reference. Make this same burger character the sole protagonist: wide low rounded layered burger body, two circular black sunglasses on top bun, playful tongue sticking out to the LEFT of its mouth, long thin black rubber-hose arms and legs, cream white gloves and oversized original simple sneakers. Preserve its recognisable silhouette and face, not a newly invented mascot. Match original flat black line art on warm ivory fills, subtle sparse halftone only. One complete character, whole body and shoes visible, centered scene with generous margins, clean silhouette readable on mobile. No text, logos, photography, other characters or anthropomorphic props. Props must be plain objects with NO faces, eyes, arms, legs. Transparent background, no background scene. Gallery scene: the Alma burger stands in a jaunty three-quarter pose, holding a small plain vintage camera in its right glove at its hip with lens facing viewer. Left glove raised in its original peace sign, one foot lightly forward. Camera is a secondary accessory no more than one third of burger body width, without a face or cartoon limbs. Burger body and round black sunglasses fully visible, preserve tongue expression. Playful photo-ready personality."
+    }
+  ]
+}

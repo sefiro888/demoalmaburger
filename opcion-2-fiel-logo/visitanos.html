@@ -28,15 +28,16 @@
   </div>
 </header>
 <main id="contenido">
-<section class="phero">
-  <div class="wrap">
+<section class="phero phero--illustrated phero--visitanos" aria-labelledby="page-title">
+  <div class="phero__canvas" aria-hidden="true"></div>
+  <div class="wrap phero__layout">
     <nav class="crumbs" aria-label="Migas de pan"><a href="index.html">Inicio</a><span>/</span><span>Visítanos</span></nav>
-    <h1 class="reveal">Ven a <em>vernos</em></h1>
-    <p class="lead reveal">En pleno centro de Ordizia, con terraza. Reserva mesa, pide por WhatsApp o déjate caer.</p>
+    <figure class="phero__illustration"><img src="img/illustrations/visitanos.png" alt="El hot dog de Alma te da la bienvenida" width="1347" height="1167" fetchpriority="high"></figure>
+    <div class="phero__intro">
+      <h1 id="page-title">Ven a <em>vernos</em></h1>
+      <p class="lead">En pleno centro de Ordizia, con terraza. Reserva mesa, pide por WhatsApp o déjate caer.</p>
+    </div>
   </div>
-  
-  <div class="phero__line"></div>
-  <div class="walker" aria-hidden="true" style="--w:104px;--t:24s"><div class="walker__x"><div class="walker__flip"><div class="rig " style="--w:104px" aria-hidden="true"><div class="bob"><img class="legL" src="img/mascot-legL.png" alt=""><img class="legR" src="img/mascot-legR.png" alt=""><img class="body" src="img/mascot-body.png" alt=""></div></div></div></div></div>
 </section>
 <section class="sec sec--ink">
   <div class="wrap visit__grid">
@@ -129,6 +130,8 @@
 <button class="orderbar" id="orderbar" type="button" hidden><span class="orderbar__n" id="orderbarN">0</span><span>Ver mi pedido</span><b id="orderbarT">0,00€</b></button>
 <div class="progress" id="progress" aria-hidden="true"></div>
 <a class="wa" href="https://wa.me/34747486092" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.6-4.8A9 9 0 1 1 8 19.5L3 21Z"/><path d="M9 10c0 2.800 2.200 5 5 5l1.200-1.300-1.800-1-.8.700a4 4 0 0 1-1.700-1.700l.7-.8-1-1.800L9 10Z" fill="currentColor" stroke="none"/></svg></a>
+<nav class="mobile-dock" aria-label="Accesos rápidos"><a href="carta.html">La carta</a><button type="button" data-wa-order>Recoger</button><a href="visitanos.html">Visítanos</a></nav><button class="motion-toggle" type="button" id="motionToggle" aria-pressed="false">Pausar movimiento</button>
 <script src="app.js"></script>
+
 </body>
 </html>

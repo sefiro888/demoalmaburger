@@ -3,3 +3,6 @@ src_img/
 alma-burger-cinco-entradas.html
 Logo Alma Burger*.png
 __pycache__/
+
+node_modules/
+_audit/

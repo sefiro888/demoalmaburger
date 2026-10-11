@@ -149,10 +149,18 @@ function card(i, idx) {
 }
 
 /* ---------- Carta / desayunos ---------- */
+function menuRow(i) {
+  const image = i.i ? `<img class="menu-row__photo" src="img/dishes/s/${i.i}.jpg" alt="" loading="lazy" width="144" height="144">` : '';
+  const label = i.t.includes('mes') ? '<span class="menu-row__label">Burger del mes</span>' : i.t.includes('picante') ? '<span class="menu-row__label">Picante</span>' : '';
+  return `<article class="item menu-row ${image ? 'menu-row--photo' : ''}" data-open="${esc(i.id)}" tabindex="0" aria-label="Ver detalles de ${esc(i.n)}">${image}
+    <div class="menu-row__copy">${label}<h3>${esc(i.n)}</h3>${i.d ? `<p>${esc(i.d)}</p>` : ''}<span class="menu-row__details">Ver detalles ↗</span></div>
+    <div class="menu-row__action"><span class="price">${eur(i.p)}</span><button class="add" data-add="${esc(i.id)}" aria-label="Añadir ${esc(i.n)} al pedido">+<span class="add__n"></span></button></div>
+  </article>`;
+}
 const menuEl = $('#menu');
 if (menuEl) {
   const mode = menuEl.dataset.mode || 'all';
-  const state = { tab: mode === 'desayunos' ? 'todo' : 'hamburguesas', filters: new Set(), q: '' };
+  const state = { tab: mode === 'desayunos' ? 'todo' : 'hamburguesas', filters: new Set(), q: '', sort: 'original' };
   const tabsEl = $('#tabs'), chipsEl = $('#chips'), qEl = $('#q');
   const groups = MENU.desayunos.groups;
   const pool = mode === 'desayunos' ? groups.flatMap(g => g.items) : allItems;
@@ -167,32 +175,47 @@ if (menuEl) {
     return state.q ? norm(i.n + ' ' + i.d + ' ' + i.t.join(' ')).includes(norm(state.q)) : true;
   };
   const filters = mode === 'desayunos' ? ['dulce', 'veg'] : FILTERS;
+  const compare = (a,b) => state.sort==='asc'?a.p-b.p:state.sort==='desc'?b.p-a.p:0;
   const render = () => {
     tabsEl.innerHTML = tabList.map(([k, l]) => `<button class="tab" role="tab" data-tab="${k}" aria-selected="${!state.q && k === state.tab}">${esc(l)}</button>`).join('');
+    const category = $('#menuCategory');
+    if (category) {
+      category.innerHTML = tabList.map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join('');
+      category.value = state.tab;
+    }
     chipsEl.innerHTML = filters.map(f => `<button class="chip" data-f="${f}" aria-pressed="${state.filters.has(f)}">${TAGLABEL[f]}</button>`).join('');
     let html = '', n = 0;
     if (state.q) {
-      const res = pool.filter(matches);
-      html = res.length ? res.map((i, k) => card(i, k)).join('') : `<div class="empty">Nada por aquí con “${esc(state.q)}”. Prueba con otra palabra.</div>`;
+      const res = pool.filter(matches).sort(compare);
+      html = res.length ? res.map(menuRow).join('') : `<div class="empty">Nada por aquí con “${esc(state.q)}”. Prueba con otra palabra.</div>`;
     } else if (mode === 'desayunos') {
       groups.forEach((g, k) => {
         if (state.tab !== 'todo' && state.tab !== 'g' + k) return;
-        const its = g.items.filter(matches); if (!its.length) return;
-        html += `<h3 class="menu__group">${g.g}</h3>` + its.map(i => card(i, n++)).join('');
+        const its = g.items.filter(matches).sort(compare); if (!its.length) return;
+        html += `<h3 class="menu__group">${esc(g.g)}</h3>` + its.map(i => { n++; return menuRow(i); }).join('');
         if (g.note) html += `<div class="menu__note">${esc(g.note)}</div>`;
       });
       if (!n) html = `<div class="empty">Nada con esos filtros.</div>`;
     } else {
       const c = MENU[state.tab];
       if (c.note) html += `<div class="menu__note">${esc(c.note)}</div>`;
-      const its = c.items.filter(matches);
-      html += its.length ? its.map((i, k) => card(i, k)).join('') : `<div class="empty">Ningún plato de esta sección cumple los filtros.</div>`;
+      const its = (c.groups ? c.groups.flatMap(g => g.items) : c.items).filter(matches).sort(compare);
+      html += `<h3 class="menu__group">${esc(c.label)}</h3>`;
+      html += its.length ? its.map(menuRow).join('') : `<div class="empty">Ningún plato de esta sección cumple los filtros.</div>`;
+      if (c.groups) c.groups.filter(g => g.note).forEach(g => { html += `<div class="menu__note">${esc(g.note)}</div>`; });
     }
-    menuEl.innerHTML = html; dispatchEvent(new Event('menu-render'));
+    menuEl.innerHTML = html;
+    if ($('#resultCount')) $('#resultCount').textContent = menuEl.querySelectorAll('.item').length + ' platos para elegir';
+    dispatchEvent(new Event('menu-render'));
   };
   tabsEl.addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if (!b) return; state.tab = b.dataset.tab; state.q = ''; qEl.value = ''; render(); });
+  $('#menuCategory')?.addEventListener('change', e => { state.tab = e.target.value; state.q = ''; qEl.value = ''; render(); });
   chipsEl.addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (!b) return; state.filters.has(b.dataset.f) ? state.filters.delete(b.dataset.f) : state.filters.add(b.dataset.f); render(); });
   qEl.addEventListener('input', e => { state.q = e.target.value.trim(); render(); });
+  $('#menuSort')?.addEventListener('change',e=>{state.sort=e.target.value;render()});
+  $('#resetMenu')?.addEventListener('click',()=>{state.q='';state.filters.clear();state.sort='original';qEl.value='';$('#menuSort').value='original';render();qEl.focus()});
+  tabsEl.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();const buttons=[...tabsEl.querySelectorAll('button')],i=buttons.indexOf(document.activeElement),j=e.key==='Home'?0:e.key==='End'?buttons.length-1:(i+(e.key==='ArrowRight'?1:-1)+buttons.length)%buttons.length;buttons[j].click();tabsEl.querySelectorAll('button')[j].focus()});
+
   render();
 }
 
@@ -246,8 +269,12 @@ function toast(msg) {
   toastEl.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('on'), 3200);
 }
 toastEl.addEventListener('click', e => { if (e.target.closest('[data-view]')) { toastEl.classList.remove('on'); openCart(true); } });
+let cartReturnFocus=null;
+cartEl.inert=true;
 const lock = o => document.documentElement.classList.toggle('lock', !!o);
 function openCart(o) {
+  if(o){cartReturnFocus=document.activeElement;cartEl.inert=false;}else{cartEl.inert=true;cartReturnFocus?.focus();}
+  cartEl.setAttribute('role','dialog');cartEl.setAttribute('aria-modal',String(o));
   cartEl.classList.toggle('open', o); scrim.classList.toggle('on', o); cartEl.setAttribute('aria-hidden', !o); lock(o);
   if (o) setTimeout(() => $('#cartClose').focus(), 50);
 }
@@ -429,7 +456,12 @@ if (mis.length) {
 const nav = $('#nav'), links = $('.nav__links'), burger = $('#burgerBtn');
 const stuck = () => nav.classList.toggle('is-stuck', scrollY > 30);
 addEventListener('scroll', stuck, { passive: true }); stuck();
-burger.addEventListener('click', () => { const o = links.classList.toggle('open'); burger.setAttribute('aria-expanded', o); });
+function closeNavigation(){links.classList.remove('open');burger.setAttribute('aria-expanded','false');burger.setAttribute('aria-label','Abrir menú')}
+burger.addEventListener('click', () => { const o = links.classList.toggle('open'); burger.setAttribute('aria-expanded', o);burger.setAttribute('aria-label',o?'Cerrar menú':'Abrir menú') });
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&links.classList.contains('open')){closeNavigation();burger.focus()}});
+document.addEventListener('click',e=>{if(!nav.contains(e.target))closeNavigation()});
+links.addEventListener('click',e=>{if(e.target.closest('a'))closeNavigation()});
+
 const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .12 });
 $$('.reveal').forEach((el, i) => { el.style.transitionDelay = (i % 4) * 70 + 'ms'; io.observe(el); });
 const hv = $('#heroVisual');
@@ -521,62 +553,19 @@ dm.addEventListener('click', e => {
   m.addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null; if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.4 && D.list.length > 1) stepDish(dx < 0 ? 1 : -1); }, { passive: true });
 })();
 
-/* ---------- Mascota del hero: cinco entradas por detrás del logo ---------- */
-const stageEl = $('#stage');
-if (stageEl) {
-  const get = id => document.getElementById(id), set = (id, n, v) => get(id).setAttribute(n, v);
-  const smooth = x => { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); }, mix = (a, b, u) => a + (b - a) * u;
-  const TITLES = ['Salto sorpresa', 'Desde la izquierda', 'Giro desde la derecha', 'Tres rebotes', 'Arco y reverencia'];
-  let mode = 0, time = 0, previous = null, auto = true, paused = false;
-  function limbs(v) {
-    const { lx = 386, ly = 567, rx = 624, ry = 652, leftAngle = 0, rightAngle = 0, flx = 474, fly = 762, frx = 539, fry = 762, footAngleL = 0, footAngleR = 0, knee = 9 } = v;
-    set('legLeft', 'd', `M480 665 Q${(480 + flx) / 2 + knee} ${(665 + fly) / 2} ${flx} ${fly - 12}`); set('legRight', 'd', `M528 665 Q${(528 + frx) / 2 - knee} ${(665 + fry) / 2} ${frx} ${fry - 12}`);
-    set('footLeft', 'transform', `translate(${flx} ${fly}) rotate(${footAngleL})`); set('footRight', 'transform', `translate(${frx} ${fry}) rotate(${footAngleR}) scale(-1 1)`);
-    set('armLeft', 'd', `M435 612 Q${398 + (lx - 386) * .55} ${603 + (ly - 567) * .55} ${lx} ${ly}`); set('armRight', 'd', `M590 612 Q${600 + (rx - 624) * .5} ${641 + (ry - 652) * .6} ${rx} ${ry}`);
-    set('handLeft', 'transform', `translate(${lx - 386} ${ly - 567}) rotate(${leftAngle} 386 567)`); set('handRight', 'transform', `translate(${rx - 624} ${ry - 652}) rotate(${rightAngle} 624 652)`);
-  }
-  function pose(t) {
-    const c = t % 10; let x = 510, y = 360, scale = .65, angle = 0, stretch = 1, wide = 1, alpha = smooth((c - .2) / .35), raise = 0, hello = 0, bend = 0;
-    if (mode === 1) { x = 350; y = 355; } else if (mode === 2) { x = 660; y = 350; } else if (mode === 3) { scale = .58; y = 350; } else if (mode === 4) { x = 540; y = 350; scale = .62; }
-    const hidden = { x, y, scale };
-    if (c < 2) { const p = smooth((c - .45) / .85), look = Math.sin(Math.max(0, c - .8) * Math.PI * 3) * 3; y -= 58 * p; angle = look; hello = mode === 4 ? p * Math.sin(c * 9) : 0; if (mode === 1) x -= 52 * p; if (mode === 2) x += 46 * p; }
-    else if (c < 3.7) {
-      const u = (c - 2) / 1.7, e = smooth(u), lift = Math.sin(Math.PI * u); let startX = hidden.x, startY = hidden.y - 58;
-      if (mode === 1) startX -= 52; if (mode === 2) startX += 46;
-      x = mix(startX, 510, e); y = mix(startY, 725, e) - (mode === 4 ? 135 : mode === 1 ? 95 : 110) * lift; scale = mix(hidden.scale, 1, e); raise = lift;
-      if (mode === 0) { angle = -8 * lift; x += 15 * Math.sin(u * Math.PI * 2); }
-      if (mode === 1) { x -= 42 * lift; angle = 18 * lift; }
-      if (mode === 2) { x += 35 * lift; angle = -360 * e; }
-      if (mode === 3) { angle = 5 * Math.sin(u * Math.PI * 2); stretch = 1 + .08 * lift; wide = 1 - .04 * lift; }
-      if (mode === 4) { x += 135 * Math.sin(Math.PI * u); angle = -16 * Math.sin(Math.PI * u); }
-    } else {
-      scale = 1; x = 510; y = 725; angle = mode === 2 ? -360 : 0;
-      if (c < 4.15) { const settle = Math.sin(Math.PI * (c - 3.7) / .45); stretch = 1 - .13 * settle; wide = 1 + .08 * settle; y = 822 - 97 * stretch; bend = settle; }
-      if (mode === 3 && c >= 4.2 && c < 6.2) { const q = (c - 4.2) % 1, h = Math.sin(Math.PI * q); y = 725 - (c < 5.2 ? 45 : 27) * h; raise = h * .7; stretch = 1 + .025 * h; }
-      if (mode === 4 && c >= 4.5 && c < 6.6) { const bow = Math.sin(Math.PI * (c - 4.5) / 2.1); angle = 14 * bow; bend = bow * .2; }
-      if (c >= 6.2 && c < 7.8) { hello = Math.sin((c - 6.2) * Math.PI * 4); angle += (mode === 2 ? 0 : Math.sin((c - 6.2) * 4) * 1.5); }
-    }
-    // vuelve detrás de las letras antes de repetir
-    if (c >= 8.3) { const u = smooth((c - 8.3) / 1.1); x = mix(x, hidden.x, u); y = mix(y, hidden.y, u) - 55 * Math.sin(Math.PI * u); scale = mix(scale, hidden.scale, u); alpha = 1 - smooth((c - 9.05) / .5); hello = 0; raise = .4 * Math.sin(Math.PI * u); angle *= 1 - u; }
-    set('traveler', 'opacity', alpha); set('traveler', 'transform', `translate(${x} ${y}) rotate(${angle}) scale(${scale * wide} ${scale * stretch}) translate(-510 -665)`);
-    const distance = Math.abs(725 - y), sa = Math.max(0, 1 - distance / 140) * .12 * alpha; set('shadow', 'opacity', sa); set('shadow', 'rx', 78 - Math.min(45, distance * .3));
-    limbs({ lx: 386 + raise * 20 + hello * 11, ly: 567 - raise * 45 - Math.abs(hello) * 5, rx: 624 + raise * 25, ry: 652 - raise * 100, leftAngle: hello * 16 - raise * 14, rightAngle: -raise * 35, flx: 474 - bend * 10, frx: 539 + bend * 10, fly: 762, fry: 762, knee: 9 + bend * 20 });
-  }
-  const dots = $('#stageDots');
-  if (dots) dots.innerHTML = TITLES.map((t, k) => `<button type="button" data-m="${k}" aria-label="Entrada ${k + 1}: ${t}" title="${t}"></button>`).join('');
-  const mark = () => $$('#stageDots button').forEach((b, k) => b.setAttribute('aria-pressed', String(k === mode)));
-  const choose = (n, manual) => { mode = n; time = 0; if (manual) auto = false; mark(); pose(0); };
-  if (dots) dots.addEventListener('click', e => { const b = e.target.closest('[data-m]'); if (b) choose(+b.dataset.m, true); });
-  let lastCycle = 0;
-  const tick = now => {
-    if (previous !== null && !paused) time += Math.min(.1, (now - previous) / 1000);
-    previous = now;
-    if (auto && Math.floor(time / 10) !== lastCycle) { lastCycle = Math.floor(time / 10); mode = (mode + 1) % 5; mark(); }
-    pose(time); requestAnimationFrame(tick);
-  };
-  document.addEventListener('visibilitychange', () => { previous = null; });
-  window.AlmaStage = { seek: (t, m) => { paused = true; auto = false; if (m !== undefined) mode = m; time = t; mark(); pose(t); } };
-  mark();
-  if (matchMedia('(prefers-reduced-motion:reduce)').matches) { paused = true; auto = false; time = 7; pose(time); } else { pose(0); requestAnimationFrame(tick); }
-}
+
+
+/* Selection helper uses only dishes already present in the menu. */
+const tastes={clasica:['La Básica','Doble Dosis'],potente:['La Triplona','La Puerquita'],picante:['Picantona','La Diabla']};
+function showTaste(key){const result=$('#tasteResult');if(!result)return;result.innerHTML=tastes[key].map((name,k)=>card(allItems.find(i=>i.n===name),k)).join('');$$('[data-taste]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.taste===key)));dispatchEvent(new Event('menu-render'))}
+$$('[data-taste]').forEach(b=>b.addEventListener('click',()=>showTaste(b.dataset.taste)));showTaste('clasica');
+$$('[data-rail]').forEach(b=>b.addEventListener('click',()=>$('#featured').scrollBy({left:Number(b.dataset.rail)*330,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'})));
+const motionToggle=$('#motionToggle');
+motionToggle?.addEventListener('click',()=>{const pause=document.documentElement.classList.toggle('motion-paused');motionToggle.setAttribute('aria-pressed',String(pause));motionToggle.textContent=pause?'Activar movimiento':'Pausar movimiento';document.dispatchEvent(new CustomEvent('alma-motion',{detail:pause}))});
+document.addEventListener('keydown',e=>{
+ if(e.key!=='Tab'||!cartEl.classList.contains('open'))return;
+ const focusable=[...cartEl.querySelectorAll('button,a,input,textarea,select')].filter(el=>!el.disabled&&el.getClientRects().length);
+ const first=focusable[0],last=focusable.at(-1);
+ if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+});
 })();

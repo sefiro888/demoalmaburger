@@ -1,0 +1,30 @@
+{
+  "mode": "built-in image_gen",
+  "references": [
+    "Original mascot: _src/img/mascot.png",
+    "User-provided hot dog screenshot"
+  ],
+  "transparent_background": true,
+  "assets": [
+    {
+      "name": "carta",
+      "prompt": "Create one polished editorial illustration for Alma Burger website navigation. Match the supplied original mascots: 1930s rubber-hose cartoon, expressive eyes, white gloves, oversized sneakers, lively black contour, cream paper, restrained fine halftone. Black and warm ivory only. Whole scene centered with generous margins, transparent background, no lettering, no logos, no photography, no realistic food, no additional panels. Fun confident personality. Clean readable silhouette at mobile size. The original hot-dog mascot from reference, leaning casually against a large open menu book with abstract short line markings only, pointing invitingly to it, one shoe lifted. Clear original hot-dog shape and mischievous expression."
+    },
+    {
+      "name": "desayunos",
+      "prompt": "Create one polished editorial illustration for Alma Burger website navigation. Match the supplied original mascots: 1930s rubber-hose cartoon, expressive eyes, white gloves, oversized sneakers, lively black contour, cream paper, restrained fine halftone. Black and warm ivory only. Whole scene centered with generous margins, transparent background, no lettering, no logos, no photography, no realistic food, no additional panels. Fun confident personality. Clean readable silhouette at mobile size. A cheerful anthropomorphic coffee mug mascot with saucer, white gloves and sneakers stretching its arms to greet a small smiling sun. An elegant curved puff of steam. Morning energy, welcoming expressive face. Only one mug character."
+    },
+    {
+      "name": "alma",
+      "prompt": "Create one polished editorial illustration for Alma Burger website navigation. Match the supplied original mascots: 1930s rubber-hose cartoon, expressive eyes, white gloves, oversized sneakers, lively black contour, cream paper, restrained fine halftone. Black and warm ivory only. Whole scene centered with generous margins, transparent background, no lettering, no logos, no photography, no realistic food, no additional panels. Fun confident personality. Clean readable silhouette at mobile size. The original sunglasses burger mascot from reference hugging a large outlined heart, standing proudly with slightly bent knees. Heart is a graphic symbol, no text. Warm playful personality; preserve the burger's sunglasses, layered body and sneakers."
+    },
+    {
+      "name": "galeria",
+      "prompt": "Create one polished editorial illustration for Alma Burger website navigation. Match the supplied original mascots: 1930s rubber-hose cartoon, expressive eyes, white gloves, oversized sneakers, lively black contour, cream paper, restrained fine halftone. Black and warm ivory only. Whole scene centered with generous margins, transparent background, no lettering, no logos, no photography, no realistic food, no additional panels. Fun confident personality. Clean readable silhouette at mobile size. A cheeky anthropomorphic vintage camera mascot with a round lens, expressive eyebrows, gloved hand making a peace sign and oversized sneakers, tilted as if posing for a photo. A tiny sparkle next to camera, no food."
+    },
+    {
+      "name": "visitanos",
+      "prompt": "Create one polished editorial illustration for Alma Burger website navigation. Match the supplied original mascots: 1930s rubber-hose cartoon, expressive eyes, white gloves, oversized sneakers, lively black contour, cream paper, restrained fine halftone. Black and warm ivory only. Whole scene centered with generous margins, transparent background, no lettering, no logos, no photography, no realistic food, no additional panels. Fun confident personality. Clean readable silhouette at mobile size. The original hot-dog mascot from reference stepping joyfully through a simple arch-shaped doorway with one glove waving welcome and other holding the door open. Simple stylized doorway, not a real restaurant facade. Whole figure and doorway visible."
+    }
+  ]
+}

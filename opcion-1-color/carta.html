@@ -28,33 +28,30 @@
   </div>
 </header>
 <main id="contenido">
-<section class="phero">
-  <div class="wrap">
+<section class="phero phero--illustrated phero--carta" aria-labelledby="page-title">
+  <div class="phero__canvas" aria-hidden="true"></div>
+  <div class="wrap phero__layout">
     <nav class="crumbs" aria-label="Migas de pan"><a href="index.html">Inicio</a><span>/</span><span>Carta</span></nav>
-    <h1 class="reveal">Elige tu <em>perdición</em></h1>
-    <p class="lead reveal">Smash burgers, picoteo, bocadillos, hot dogs y tartas de queso. A domicilio, pide en Just Eat. Para recoger, pulsa + y envía tu pedido por WhatsApp.</p>
-  </div>
-  
-  <div class="phero__line"></div>
-  <div class="walker" aria-hidden="true" style="--w:104px;--t:24s"><div class="walker__x"><div class="walker__flip"><div class="rig " style="--w:104px" aria-hidden="true"><div class="bob"><img class="legL" src="img/mascot-legL.png" alt=""><img class="legR" src="img/mascot-legR.png" alt=""><img class="body" src="img/mascot-body.png" alt=""></div></div></div></div></div>
-</section>
-<section class="jebanner"><div class="wrap jebanner__in">
-  <div class="jebanner__main"><b>¿Lo quieres a domicilio?</b><span>Pídelo en Just Eat: es la forma más cómoda de recibirlo en casa.</span></div>
-  <a class="btn btn--je" href="https://www.just-eat.es/restaurants-alma-burger-ordizia/menu" target="_blank" rel="noopener">Pedir a domicilio · Just Eat ↗</a>
-  <div class="jebanner__alt"><b>¿Para recoger?</b><span>Pulsa <b>+</b> en los platos y envía el pedido por WhatsApp.</span></div>
-</div></section>
-<section class="sec sec--dark" style="padding-top:34px">
-  <div class="wrap">
-    <div class="carta__head reveal">
-      <a class="ribbon" href="#hamburguesas" onclick="document.querySelector('[data-tab=hamburguesas]').click()" style="margin:0"><span class="ribbon__tag">Burger del mes</span><b>La Puerquita</b><span>pulled pork · 18,50€</span></a>
-      <button class="btn btn--cream btn--sm" type="button" data-surprise>¿Indeciso? Sorpréndeme</button>
-      <label class="search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input id="q" type="search" placeholder="Busca: cabra, trufa, picante…" aria-label="Buscar en la carta" autocomplete="off"></label>
+    <figure class="phero__illustration"><img src="img/illustrations/carta.png" alt="El hot dog de Alma presenta la carta" width="1536" height="1024" fetchpriority="high"></figure>
+    <div class="phero__intro">
+      <h1 id="page-title">Elige tu <em>perdición</em></h1>
+      <p class="lead">Smash burgers, picoteo para compartir, bocadillos, hot dogs y un final dulce. Encuentra tu próximo antojo.</p>
     </div>
+  </div>
+</section><section class="sec menu-section" id="menu-desayunos" aria-label="Carta de platos">
+  <div class="wrap">
+    <div class="menu-heading">
+      <div><h2 class="sec__title">La carta, <em>a tu ritmo</em></h2><p>Toca un plato para ver sus detalles. Pulsa + para añadirlo a tu pedido para recoger.</p></div>
+      <label class="search"><span aria-hidden="true">⌕</span><input id="q" type="search" placeholder="Busca tu plato o ingrediente" aria-label="Buscar platos" autocomplete="off"></label>
+    </div>
+    <label class="menu-category" for="menuCategory">¿Qué te apetece?<select id="menuCategory" aria-label="Categorías de la carta"></select></label>
     <div class="tabs" id="tabs" role="tablist" aria-label="Categorías de la carta"></div>
-    <div class="chips" id="chips" aria-label="Filtros"></div>
-    <div id="menu" class="menu" data-mode="all" aria-live="polite"></div>
-    <p class="carta__note">Suplemento por cada ingrediente extra. Consulta nuestra <b>carta de alérgenos</b> al personal. Algunas imágenes son ilustrativas.</p>
+    <div class="menu-meta"><output id="resultCount" aria-live="polite"></output><details class="menu-refine"><summary>Filtrar y ordenar</summary>
+      <div class="menu-refine__body"><div class="chips" id="chips" aria-label="Filtros"></div>
+      <div class="menu-tools"><label>Ordenar <select id="menuSort"><option value="original">Orden de la carta</option><option value="asc">Precio: menor a mayor</option><option value="desc">Precio: mayor a menor</option></select></label><button type="button" id="resetMenu">Limpiar filtros</button></div></div>
+    </details></div>
+    <div id="menu" class="menu menu--list" data-mode="all" aria-live="polite"></div>
+    <p class="carta__note">Suplemento por cada ingrediente extra. Consulta nuestra carta de alérgenos al personal.</p>
   </div>
 </section>
 </main>
@@ -111,6 +108,8 @@
 <button class="orderbar" id="orderbar" type="button" hidden><span class="orderbar__n" id="orderbarN">0</span><span>Ver mi pedido</span><b id="orderbarT">0,00€</b></button>
 <div class="progress" id="progress" aria-hidden="true"></div>
 <a class="wa" href="https://wa.me/34747486092" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.6-4.8A9 9 0 1 1 8 19.5L3 21Z"/><path d="M9 10c0 2.800 2.200 5 5 5l1.200-1.300-1.800-1-.8.700a4 4 0 0 1-1.700-1.700l.7-.8-1-1.800L9 10Z" fill="currentColor" stroke="none"/></svg></a>
+<nav class="mobile-dock" aria-label="Accesos rápidos"><a href="carta.html">La carta</a><button type="button" data-wa-order>Recoger</button><a href="visitanos.html">Visítanos</a></nav><button class="motion-toggle" type="button" id="motionToggle" aria-pressed="false">Pausar movimiento</button>
 <script src="app.js"></script>
+
 </body>
 </html>
