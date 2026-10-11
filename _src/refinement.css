@@ -99,3 +99,10 @@
 @media(max-width:360px){.menu-row__photo{width:44px;height:54px}.menu--list .menu-row{gap:8px}.hero__welcome .btn{font-size:.78rem}}
 
 @media(max-width:700px){.menu-category{position:sticky;top:64px;z-index:21;background:var(--cream);padding:10px 0 12px;border-bottom:1px solid color-mix(in srgb,var(--ink) 15%,transparent)}}
+
+/* Featured dishes support the brand with small, quiet menu rows. */
+.featured-section .sec__head{align-items:center;margin-bottom:12px;gap:16px}.featured-section .sec__title{font-size:clamp(1.8rem,3vw,2.7rem);margin:0}.featured-section .kicker{font-size:.7rem;margin-bottom:10px}
+.featured-link{font-size:.85rem;font-weight:700;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:4px;white-space:nowrap}
+.featured-list{border-top:1px solid color-mix(in srgb,var(--ink) 16%,transparent)}
+.featured-list .menu-row{padding:18px 0}.featured-list .menu-row__photo{width:56px;height:56px;border-radius:12px}.featured-list .menu-row h3{font-size:1rem}.featured-list .menu-row p{-webkit-line-clamp:1;font-size:.78rem}.featured-list .menu-row__action{flex-direction:row;align-items:center;gap:14px}.featured-list .menu-row__label{font-size:.6rem}
+@media(max-width:700px){.featured-section .sec__head{align-items:flex-end;margin-bottom:16px}.featured-section .sec__title{font-size:1.8rem;max-width:8em}.featured-link{font-size:.75rem}.featured-list .menu-row{padding:16px 0}.featured-list .menu-row__photo{width:48px;height:48px;border-radius:10px}.featured-list .menu-row__action{flex-direction:column;gap:8px}.featured-list .menu-row h3{font-size:.96rem}.featured-list .menu-row p{font-size:.75rem}}

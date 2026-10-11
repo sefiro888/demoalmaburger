@@ -44,7 +44,13 @@ for (const theme of ['opcion-1-color', 'opcion-2-fiel-logo']) {
     if (page === 'index') {
       check($('#tasteResult').querySelectorAll('.item').length === 2, 'Initial taste');
       $('[data-taste="picante"]').click(); check($('#tasteResult').textContent.includes('Picantona'), 'Taste selection');
-      $('[data-rail="1"]').click(); $('#restart').click();
+      check($('#featured').querySelectorAll('.menu-row').length === 6, 'Compact featured list');
+      check(!$('#featured .item__img'), 'No large featured images');
+      $('#featured .item').click(); check($('#dishModal').classList.contains('on'), 'Featured dish dialog');
+      $('#dishModal .modal__x').click();
+      $('#featured .add').click(); check($('#cartCount').textContent === '1', 'Add featured dish');
+      $('#cartOpen').click(); $('[data-rm="0"]').click(); $('#cartClose').click();
+      $('#restart').click();
       for(let n=0;n<250;n++){const pending=[...t.frames];t.frames.clear();pending.forEach(([id,f])=>f(n*50))}
       check(!$('#traveler').getAttribute('transform').includes('NaN'), 'Animation numeric coordinates');
     }

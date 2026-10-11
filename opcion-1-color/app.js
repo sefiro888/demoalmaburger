@@ -222,7 +222,7 @@ if (menuEl) {
 /* ---------- Destacados (los que Just Eat marca como destacados) ---------- */
 const feat = $('#featured');
 if (feat) feat.innerHTML = ['Doble Dosis', 'La Puerquita', 'La Dori', 'La Triplona', 'Gordi Deluxe', 'Patatas trufadas']
-  .map((n, k) => card(allItems.find(i => i.n === n), k)).join('');
+  .map(n => menuRow(allItems.find(i => i.n === n))).join('');
 
 /* ---------- Contadores ---------- */
 $$('[data-stat]').forEach(el => {
@@ -559,7 +559,6 @@ dm.addEventListener('click', e => {
 const tastes={clasica:['La Básica','Doble Dosis'],potente:['La Triplona','La Puerquita'],picante:['Picantona','La Diabla']};
 function showTaste(key){const result=$('#tasteResult');if(!result)return;result.innerHTML=tastes[key].map((name,k)=>card(allItems.find(i=>i.n===name),k)).join('');$$('[data-taste]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.taste===key)));dispatchEvent(new Event('menu-render'))}
 $$('[data-taste]').forEach(b=>b.addEventListener('click',()=>showTaste(b.dataset.taste)));showTaste('clasica');
-$$('[data-rail]').forEach(b=>b.addEventListener('click',()=>$('#featured').scrollBy({left:Number(b.dataset.rail)*330,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'})));
 const motionToggle=$('#motionToggle');
 motionToggle?.addEventListener('click',()=>{const pause=document.documentElement.classList.toggle('motion-paused');motionToggle.setAttribute('aria-pressed',String(pause));motionToggle.textContent=pause?'Activar movimiento':'Pausar movimiento';document.dispatchEvent(new CustomEvent('alma-motion',{detail:pause}))});
 document.addEventListener('keydown',e=>{
